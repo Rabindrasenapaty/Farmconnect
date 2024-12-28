@@ -5,11 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rabindra.farmconnect.R
 import java.time.LocalDate
@@ -38,12 +35,8 @@ fun MarketplaceScreen(navController: NavHostController) {
     val crops = listOf(
         Crop("Tomatoes", "50", "John Doe", "California", "2024-12-31", 10, R.drawable.img_1),
         Crop("Potatoes", "30", "Jane Smith", "Texas", "2024-12-20", 20, R.drawable.img_2),
-        Crop("Carrots", "40", "Robert Brown", "Florida", "2024-12-25", 15, R.drawable.img_3),
-        Crop("Tomatoes", "50", "John Doe", "California", "2024-12-31", 10, R.drawable.img_1),
-        Crop("Potatoes", "30", "Jane Smith", "Texas", "2024-12-20", 20, R.drawable.img_2),
         Crop("Carrots", "40", "Robert Brown", "Florida", "2024-12-25", 15, R.drawable.img_3)
     )
-
 
     Column(
         modifier = Modifier
@@ -53,7 +46,6 @@ fun MarketplaceScreen(navController: NavHostController) {
     ) {
         Text("Filter Crops", style = MaterialTheme.typography.headlineSmall)
 
-        // Use the updated CropTypeDropdown
         CropTypeDropdown(
             selectedCropType = selectedCropType,
             onCropTypeSelected = { selectedCropType = it }
@@ -106,13 +98,12 @@ fun MarketplaceScreen(navController: NavHostController) {
                             crop.price.toInt() <= priceRange
                 }
             ) { crop ->
-                CropCard(crop) {
-                    navController.navigate("crop_details/${crop.type}")
-                }
+                CropCard(crop = crop, navController = navController)
             }
         }
     }
 }
+
 @Composable
 fun CropTypeDropdown(
     selectedCropType: String,
@@ -163,9 +154,8 @@ fun isDateRelevant(harvestDate: String, inputDate: String): Boolean {
     return !cropDate.isBefore(filterDate.minusDays(7))
 }
 
-
 @Composable
-fun CropCard(crop: Crop, onViewDetailsClick: () -> Unit) {
+fun CropCard(crop: Crop, navController: NavHostController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -194,9 +184,12 @@ fun CropCard(crop: Crop, onViewDetailsClick: () -> Unit) {
             }
 
             // View Details Button
-            Button(onClick = onViewDetailsClick) {
+            Button(onClick = {
+                navController.navigate("crop_details/${crop.type}")
+            }) {
                 Text("View Details")
             }
+
         }
     }
 }

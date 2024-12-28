@@ -28,7 +28,7 @@ fun NavGraph(navController: NavHostController) {
                 when (option) {
                     "browse_produce" -> navController.navigate("marketplace")
                     "post_requirements" -> navController.navigate("post_requirements")
-                    "my_contracts" -> navController.navigate("my_contracts")
+                    "buyer_contract_screen" -> navController.navigate("buyer_contract_screen")
                     "notifications" -> navController.navigate("notifications")
                     "profile" -> navController.navigate("profile/buyer")
                 }
@@ -38,12 +38,31 @@ fun NavGraph(navController: NavHostController) {
             FarmerDashboard { option ->
                 when (option) {
                     "add_contract" -> navController.navigate("add_contract")
-                    "my_contracts" -> navController.navigate("my_contracts")
+                    "my_contracts" -> navController.navigate("my_contracts")  // Navigate to Farmer Contracts Screen
                     "crop_analytics" -> navController.navigate("crop_analytics")
-                    "notifications" -> navController.navigate("notifications")
+                    "notifications" -> navController.navigate("farmer_notifications")
                     "profile" -> navController.navigate("profile/farmer")
                 }
             }
+        }
+        composable("farmer_notifications") {
+            FarmerNotificationsScreen(navController = navController)
+        }
+
+        composable("my_contracts") {
+            FarmerContractsScreen(navController)  // Farmer Contracts Screen
+        }
+        composable("contract_details/{contractId}") { backStackEntry ->
+            val contractId = backStackEntry.arguments?.getString("contractId") ?: "N/A"
+            FContractDetailsScreen(contractId = contractId, navController = navController)  // Contract Details Screen for Farmer
+        }
+        composable("crop_analytics") {
+            CropAnalyticsScreen(navController = navController)
+        }
+
+
+        composable("post_requirements") {
+            PostRequirementScreen(navController)
         }
         composable("add_contract") {
             AddCropScreen(navController)
@@ -55,6 +74,36 @@ fun NavGraph(navController: NavHostController) {
         composable("marketplace") {
             MarketplaceScreen(navController)
         }
-
+        composable("crop_details/{cropId}") { backStackEntry ->
+            val cropId = backStackEntry.arguments?.getString("cropId") ?: "N/A"
+            CropDetailsScreen(cropId = cropId, navController = navController)
+        }
+        composable("offer_contract/{cropType}/{farmerName}") { backStackEntry ->
+            OfferContractScreen(
+                cropType = backStackEntry.arguments?.getString("cropType") ?: "",
+                farmerName = backStackEntry.arguments?.getString("farmerName") ?: "",
+                navController = navController
+            )
+        }
+        composable("notifications") {
+            NotificationsScreen(navController = navController)
+        }
+        composable("contract_details/{contractId}") { backStackEntry ->
+            val contractId = backStackEntry.arguments?.getString("contractId") ?: "N/A"
+            ContractDetailsScreen(contractId = contractId, navController = navController)
+        }
+        composable("payment_details/{paymentId}") { backStackEntry ->
+            val paymentId = backStackEntry.arguments?.getString("paymentId") ?: "N/A"
+            PaymentDetailsScreen(paymentId = paymentId, navController = navController)
+        }
+        composable("contact_farmer") { ContactFarmerScreen() }
+        composable("negotiate_price") { NegotiatePriceScreen() }
+        composable("buyer_contract_screen") {
+            BuyerContractsScreen(
+                navigateToContractDetails = { contractId ->
+                    navController.navigate("contract_details/$contractId")
+                }
+            )
+        }
     }
 }

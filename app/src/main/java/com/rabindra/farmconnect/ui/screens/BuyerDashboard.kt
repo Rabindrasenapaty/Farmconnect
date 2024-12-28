@@ -100,8 +100,9 @@ fun BuyerDashboard(navigateToOption: (String) -> Unit) {
                     title = "My Contracts",
                     icon = Icons.Default.List,
                     backgroundColor = Color.Red,
-                    onClick = { navigateToOption("my_contracts") }
+                    onClick = { navigateToOption("buyer_contract_screen") } // Navigate to Buyer Contracts Screen
                 )
+
             }
         }
     }

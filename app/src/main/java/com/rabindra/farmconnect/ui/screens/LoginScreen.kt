@@ -1,11 +1,14 @@
 package com.rabindra.farmconnect.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -46,13 +49,14 @@ fun LoginScreen(navController: NavController, userType: String?) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Forgot Password
-        TextButton(
-            onClick = { navController.navigate("password_recovery") },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(text = "Forgot Password?")
-        }
+        // Forgot Password (Styled as underlined text)
+        Text(
+            text = "Forgot Password?",
+            style = TextStyle(textDecoration = TextDecoration.Underline),
+            modifier = Modifier.align(Alignment.End).clickable {
+                // Handle forgot password action here (if any) or show a message
+            }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
