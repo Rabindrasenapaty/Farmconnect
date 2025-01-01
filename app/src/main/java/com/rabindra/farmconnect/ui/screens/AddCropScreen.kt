@@ -1,21 +1,24 @@
 package com.rabindra.farmconnect.ui.screens
 
-import android.os.Bundle
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import androidx.navigation.NavHostController
-import com.rabindra.farmconnect.R
 
 @Composable
 fun AddCropScreen(navController: NavHostController) {
@@ -24,101 +27,122 @@ fun AddCropScreen(navController: NavHostController) {
     var price by remember { mutableStateOf("") }
     var harvestDate by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
-    var imageUri by remember { mutableStateOf<String?>(null) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+
+    // Launcher for selecting an image from the gallery
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+        if (uri == null) {
+            Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Add Crop", style = MaterialTheme.typography.headlineLarge)
+        Text(
+            text = "Add Crop",
+            style = MaterialTheme.typography.headlineMedium
+        )
 
         // Crop Type Input Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Crop Type", style = MaterialTheme.typography.bodyMedium)
-            BasicTextField(
-                value = cropType,
-                onValueChange = { cropType = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
-        }
+        OutlinedTextField(
+            value = cropType,
+            onValueChange = { cropType = it },
+            label = { Text("Crop Type") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Quantity Input Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Quantity (kg)", style = MaterialTheme.typography.bodyMedium)
-            BasicTextField(
-                value = quantity,
-                onValueChange = { quantity = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
-        }
+        OutlinedTextField(
+            value = quantity,
+            onValueChange = { quantity = it },
+            label = { Text("Quantity (kg)") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Price Input Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Price (per kg)", style = MaterialTheme.typography.bodyMedium)
-            BasicTextField(
-                value = price,
-                onValueChange = { price = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
-        }
+        OutlinedTextField(
+            value = price,
+            onValueChange = { price = it },
+            label = { Text("Price (per kg)") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Harvest Date Input Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Harvest Date", style = MaterialTheme.typography.bodyMedium)
-            BasicTextField(
-                value = harvestDate,
-                onValueChange = { harvestDate = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
-        }
+        OutlinedTextField(
+            value = harvestDate,
+            onValueChange = { harvestDate = it },
+            label = { Text("Harvest Date") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Location Input Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Location", style = MaterialTheme.typography.bodyMedium)
-            BasicTextField(
-                value = location,
-                onValueChange = { location = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
-        }
+        OutlinedTextField(
+            value = location,
+            onValueChange = { location = it },
+            label = { Text("Location") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        // Upload image button
-        Button(onClick = {
-            // Replace this with actual image upload logic later
-            imageUri = "placeholder_image_uri" // Placeholder for selected image URI
-        }) {
+        // Upload Image Button
+        Button(
+            onClick = { galleryLauncher.launch("image/*") }
+        ) {
             Text("Upload Image")
         }
 
-        // Show selected image (if any)
+        // Display selected image with delete badge (if any)
         if (imageUri != null) {
-            Image(
-                painter = painterResource(id = R.drawable.img), // Placeholder image
-                contentDescription = "Selected Image",
-                modifier = Modifier.size(100.dp).padding(8.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(8.dp),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUri),
+                    contentDescription = "Selected Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                IconButton(
+                    onClick = { imageUri = null },
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Image",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         }
 
-        // Submit button
+        // Submit Button
         Button(
             onClick = {
-                // Save data here (you will add database later)
-                navController.popBackStack()
-                // Show success notification
-                // Example: Toast or Snackbar
+                // Input validation
+                if (cropType.isBlank() || quantity.isBlank() || price.isBlank() || location.isBlank()) {
+                    Toast.makeText(context, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Navigate back and save data logic here
+                    navController.popBackStack()
+                    Toast.makeText(context, "Crop Added Successfully!", Toast.LENGTH_SHORT).show()
+                }
             },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             Text("Submit")
         }
