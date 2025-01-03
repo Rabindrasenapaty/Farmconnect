@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">ଫାର୍ମକନେକ୍ଟ</string>
+    <string name="sell">ବିକ୍ରି କରନ୍ତୁ</string>
+    <string name="buy">କିଣନ୍ତୁ</string>
+    <string name="login_form">ଲଗଇନ ଫର୍ମ</string>
+    <string name="email_address">ଇମେଲ୍ ଠିକଣା</string>
+    <string name="password">ପାସୱାର୍ଡ</string>
+    <string name="forgot_password">ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛି?</string>
+    <string name="login">ଲଗଇନ</string>
+    <string name="not_a_member">ସଦସ୍ୟ ନୁହନ୍ତି?</string>
+    <string name="sign_up_now">ଏବେ ସାଇନ୍ ଅପ୍ କରନ୍ତୁ</string>
+</resources>
