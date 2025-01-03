@@ -13,7 +13,7 @@ fun NavGraph(navController: NavHostController) {
         startDestination = "welcome"
     ) {
         composable("welcome") {
-            WelcomeScreen(navController)
+            WelcomeScreen(navController,context = navController.context)
         }
         composable("login/{userType}") { backStackEntry ->
             val userType = backStackEntry.arguments?.getString("userType") ?: "buyer"

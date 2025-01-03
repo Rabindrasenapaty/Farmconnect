@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,9 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rabindra.farmconnect.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuyerDashboard(navigateToOption: (String) -> Unit) {
+fun BuyerDashboard(navigateToOption: (Any) -> Unit) {
     // Placeholder background image painter
     val backgroundImage: Painter = painterResource(R.drawable.background) // Add this image in your `res/drawable` folder.
 
@@ -98,7 +98,7 @@ fun BuyerDashboard(navigateToOption: (String) -> Unit) {
 
                 DashboardOptionCard(
                     title = "My Contracts",
-                    icon = Icons.Default.List,
+                    icon = Icons.AutoMirrored.Filled.List,
                     backgroundColor = Color.Red,
                     onClick = { navigateToOption("buyer_contract_screen") } // Navigate to Buyer Contracts Screen
                 )

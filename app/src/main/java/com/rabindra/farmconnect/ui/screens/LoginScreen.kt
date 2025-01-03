@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -55,7 +56,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Login Form", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                Text(text = stringResource(R.string.login_form), style = MaterialTheme.typography.headlineSmall, color = Color.White)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -63,7 +64,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email Address") },
+                    label = { Text(stringResource(id = R.string.email_address)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -73,7 +74,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(id = R.string.password)) },
                     visualTransformation = PasswordVisualTransformation(), // Hide password
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -82,7 +83,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
 
                 // Forgot Password (Styled as underlined text)
                 Text(
-                    text = "Forgot Password?",
+                    text = stringResource(id = R.string.forgot_password),
                     style = TextStyle(textDecoration = TextDecoration.Underline),
                     color = Color.White,
                     modifier = Modifier
@@ -106,7 +107,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Login")
+                    Text(stringResource(id = R.string.login))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -118,13 +119,13 @@ fun LoginScreen(navController: NavController, userType: String?) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Not a member? ",
+                        text = stringResource(id = R.string.not_a_member),
                         color = Color.White,
                     )
                     TextButton(
                         onClick = { navController.navigate("signup/$userType") },
                     ) {
-                        Text(text = "Sign up now")
+                        Text(text = stringResource(R.string.sign_up_now))
                     }
                 }
             }
