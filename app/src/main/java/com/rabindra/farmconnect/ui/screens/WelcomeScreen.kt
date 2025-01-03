@@ -57,7 +57,7 @@ fun WelcomeScreen(navController: NavController) {
                         .padding(horizontal = 4.dp)
                         .size(if (isSelected) 10.dp else 8.dp)
                         .clip(CircleShape)
-                        .background(if (isSelected) Color(0xFF27442A) else Color(0xFF549159))
+                        .background(if (isSelected) Color.Black else Color.LightGray)
                 )
             }
         }
@@ -133,7 +133,7 @@ fun Screen2(color: Color) {
             painter = painterResource(id = R.drawable.img_4), // Background image
             contentDescription = "Background Image",
             modifier = Modifier.fillMaxSize(),
-            alpha = 0.5f, // Apply fade effect by reducing opacity
+            alpha = 0.3f, // Apply fade effect by reducing opacity
             contentScale = ContentScale.Crop
         )
 
