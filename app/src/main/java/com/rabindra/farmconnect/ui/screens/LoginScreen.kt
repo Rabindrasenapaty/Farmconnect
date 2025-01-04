@@ -100,7 +100,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                     onClick = {
                         // Navigate based on userType
                         when (userType) {
-                            "farmer" -> navController.navigate("farmer_dashboard")
+                            "farmer" -> navController.navigate("verification")
                             "buyer" -> navController.navigate("buyer_dashboard")
                             else -> navController.navigate("welcome") // Fallback in case of an error
                         }
