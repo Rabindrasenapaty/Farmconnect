@@ -127,5 +127,8 @@ fun NavGraph(navController: NavHostController) {
             val contractId = backStackEntry.arguments?.getString("contractId") ?: "N/A"
             ConfirmationScreen(navController = navController, contractId = contractId)
         }
+        composable("verification") {
+            VerificationPage(navController = navController)
+        }
     }
 }
