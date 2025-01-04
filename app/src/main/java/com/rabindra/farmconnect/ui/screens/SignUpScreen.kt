@@ -98,7 +98,8 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                     onClick = {
                         navController.navigate("login/${userType ?: "buyer"}")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     Text(text = stringResource(id = R.string.sign_up))
                 }
