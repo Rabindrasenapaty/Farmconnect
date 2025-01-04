@@ -11,4 +11,7 @@
     <string name="login">लॉगिन</string>
     <string name="not_a_member">सदस्य नहीं हैं?</string>
     <string name="sign_up_now">अभी साइन अप करें</string>
+
+    <string name="confirm_password">पासवर्ड की पुष्टि करें</string>
+    <string name="sign_up">साइन अप करें</string>
 </resources>

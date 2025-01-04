@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.rabindra.farmconnect.R
@@ -55,7 +56,11 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Sign Up Form",color = Color.White, style = MaterialTheme.typography.headlineSmall)
+                Text(
+                    text = stringResource(id = R.string.not_a_member),
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -63,7 +68,7 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email Address") },
+                    label = { Text(stringResource(id = R.string.email_address)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -73,7 +78,7 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(id = R.string.password)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -83,7 +88,7 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                 OutlinedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = { Text("Confirm Password") },
+                    label = { Text(stringResource(id = R.string.confirm_password)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -95,7 +100,7 @@ fun SignUpScreen(navController: NavController, userType: String?) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Sign Up")
+                    Text(text = stringResource(id = R.string.sign_up))
                 }
             }
         }

@@ -11,4 +11,6 @@
     <string name="login">ଲଗଇନ</string>
     <string name="not_a_member">ସଦସ୍ୟ ନୁହନ୍ତି?</string>
     <string name="sign_up_now">ଏବେ ସାଇନ୍ ଅପ୍ କରନ୍ତୁ</string>
+    <string name="confirm_password">ପାସୱାର୍ଡ ସତ୍ୟାପିତ କରନ୍ତୁ</string>
+    <string name="sign_up">ସାଇନ୍ ଅପ୍ କରନ୍ତୁ</string>
 </resources>
