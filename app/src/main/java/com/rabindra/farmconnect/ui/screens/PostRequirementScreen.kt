@@ -61,8 +61,3 @@ fun PostRequirementScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PostRequirementScreenPreview() {
-    PostRequirementScreen(navController = NavController(LocalContext.current))
-}

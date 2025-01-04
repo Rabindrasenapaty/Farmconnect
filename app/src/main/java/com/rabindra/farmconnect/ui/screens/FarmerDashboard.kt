@@ -62,7 +62,13 @@ fun FarmerDashboard(navigateToOption: (String) -> Unit) {
             ) {
                 Text("Crop Analytics")
             }
+            Button(
+                onClick = { navigateToOption("buyer_contracts") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Buyer Contracts")
+            }
+
         }
     }
 }
-
