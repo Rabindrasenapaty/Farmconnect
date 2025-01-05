@@ -10,13 +10,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun NegotiatePriceScreen() {
-    var offerPrice by remember { mutableStateOf("") }  // User input for offer price
-    val contractDetails = "Wheat, 100 kg, $600 (Initial Price)" // Mock contract details
-    val counterOffer = "550" // Mock counter offer value
+fun NegotiatePriceScreen(
+    cropName: String,
+    quantity: String,
+    initialPrice: String,
+    counterOffer: String,
+    onAccept: () -> Unit,
+    onReject: () -> Unit
+) {
+    var offerPrice by remember { mutableStateOf("") } // User input for offer price
+    val contractDetails = "$cropName, $quantity, $$initialPrice (Initial Price)" // Dynamic contract details
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Title
@@ -69,10 +77,10 @@ fun NegotiatePriceScreen() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = { /* Handle Accept Action */ }) {
+            Button(onClick = onAccept) {
                 Text("Accept")
             }
-            Button(onClick = { /* Handle Reject Action */ }) {
+            Button(onClick = onReject) {
                 Text("Reject")
             }
         }
@@ -88,13 +96,15 @@ fun NegotiatePriceScreen() {
 
         // Placeholder for negotiation messages
         Card(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Farmer: Initial offer was $600 for 100 kg wheat", style = MaterialTheme.typography.bodyMedium)
+                Text("Farmer: Initial offer was $$initialPrice for $quantity $cropName", style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("You: Your offer was $550", style = MaterialTheme.typography.bodyMedium)
+                Text("You: Your offer was $offerPrice", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

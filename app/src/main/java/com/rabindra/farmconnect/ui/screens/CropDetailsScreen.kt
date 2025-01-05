@@ -71,12 +71,13 @@ fun CropDetailsScreen(cropId: String, navController: NavHostController) {
             }
 
 
-            Button(
-                onClick = { navController.navigate("negotiate_price") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Button(onClick = {
+                navController.navigate("negotiate/${crop.type}/100/600/550")
+
+            },modifier = Modifier.fillMaxWidth()) {
                 Text("Negotiate Price")
             }
+
 
 
             Button(

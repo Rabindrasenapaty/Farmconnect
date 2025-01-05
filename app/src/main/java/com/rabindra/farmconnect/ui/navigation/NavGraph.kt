@@ -1,12 +1,17 @@
 package com.rabindra.farmconnect.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.rabindra.farmconnect.ui.screens.*
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
@@ -115,7 +120,30 @@ fun NavGraph(navController: NavHostController) {
             PaymentDetailsScreen(paymentId = paymentId, navController = navController)
         }
         composable("contact_farmer") { ContactFarmerScreen() }
-        composable("negotiate_price") { NegotiatePriceScreen() }
+        composable(
+            "negotiate/{cropName}/{quantity}/{initialPrice}/{counterOffer}",
+            arguments = listOf(
+                navArgument("cropName") { type = NavType.StringType },
+                navArgument("quantity") { type = NavType.StringType },
+                navArgument("initialPrice") { type = NavType.StringType },
+                navArgument("counterOffer") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val cropName = backStackEntry.arguments?.getString("cropName") ?: ""
+            val quantity = backStackEntry.arguments?.getString("quantity") ?: ""
+            val initialPrice = backStackEntry.arguments?.getString("initialPrice") ?: ""
+            val counterOffer = backStackEntry.arguments?.getString("counterOffer") ?: ""
+
+            NegotiatePriceScreen(
+                cropName = cropName,
+                quantity = quantity,
+                initialPrice = initialPrice,
+                counterOffer = counterOffer,
+                onAccept = { /* Handle Accept Action */ },
+                onReject = { /* Handle Reject Action */ }
+            )
+        }
+
         composable("buyer_contract_screen") {
             BuyerContractsScreen(
                 navigateToContractDetails = { contractId ->
@@ -130,5 +158,30 @@ fun NavGraph(navController: NavHostController) {
         composable("verification") {
             VerificationPage(navController = navController)
         }
+
+
+        composable(
+            "payment/{cropType}/{offeredPrice}/{offeredQuantity}",
+            arguments = listOf(
+                navArgument("cropType") { type = NavType.StringType },
+                navArgument("offeredPrice") { type = NavType.StringType },
+                navArgument("offeredQuantity") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val cropType = backStackEntry.arguments?.getString("cropType") ?: ""
+            val offeredPrice = backStackEntry.arguments?.getString("offeredPrice") ?: "0"
+            val offeredQuantity = backStackEntry.arguments?.getString("offeredQuantity") ?: "0"
+
+            PaymentScreen(navController, cropType, offeredPrice, offeredQuantity)
+        }
+
+        composable("agreement/{paymentMethod}/{contractId}") { backStackEntry ->
+            val paymentMethod = backStackEntry.arguments?.getString("paymentMethod") ?: "Credit Card"
+            val contractId = backStackEntry.arguments?.getString("contractId") ?: "Unknown"
+            AgreementScreen(paymentMethod = paymentMethod, contractId = contractId, navController = navController)
+        }
+
     }
-}
+        }
+
+
