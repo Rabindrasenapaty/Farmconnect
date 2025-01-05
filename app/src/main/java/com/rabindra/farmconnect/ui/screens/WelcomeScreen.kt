@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -88,6 +90,7 @@ fun Screen1(navController: NavController, color: Color) {
             contentScale = ContentScale.Crop
         )
 
+        // Content Column, centered inside the Box
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -102,7 +105,7 @@ fun Screen1(navController: NavController, color: Color) {
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.Serif,
                 color = Color(0xFF283618),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -114,7 +117,7 @@ fun Screen1(navController: NavController, color: Color) {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF283618),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -126,11 +129,11 @@ fun Screen1(navController: NavController, color: Color) {
                 modifier = Modifier
                     .size(200.dp)
                     .clip(CircleShape)
-                    .align(Alignment.CenterHorizontally)
             )
         }
     }
 }
+
 
 @Composable
 fun Screen2(navController: NavController, color: Color) {
@@ -261,7 +264,7 @@ fun Screen3(navController: NavController, context: Context) {
 
                 // Display Image
                 Image(
-                    painter = painterResource(id = R.drawable.farmconnectlogo),
+                    painter = painterResource(id = R.drawable.img1),
                     contentDescription = "App Logo",
                     modifier = Modifier
                         .size(200.dp)
@@ -270,22 +273,34 @@ fun Screen3(navController: NavController, context: Context) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Sell Button
-                Button(
-                    onClick = { navController.navigate("login/farmer") },
-                    modifier = Modifier.fillMaxWidth()
+                // Sell and Buy Buttons Side by Side
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(context.getString(R.string.sell))
-                }
+                    // Sell Button
+                    Button(
+                        onClick = { navController.navigate("login/farmer") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF74C69D)), // Greenish color
+                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                    ) {
+                        Text(
+                            text = context.getString(R.string.sell),
+                            color = Color.White
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Buy Button
-                Button(
-                    onClick = { navController.navigate("login/buyer") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(context.getString(R.string.buy))
+                    // Buy Button
+                    Button(
+                        onClick = { navController.navigate("login/buyer") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF52B788)), // Slightly darker green
+                        modifier = Modifier.weight(1f).padding(start = 8.dp)
+                    ) {
+                        Text(
+                            text = context.getString(R.string.buy),
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -296,10 +311,10 @@ fun Screen3(navController: NavController, context: Context) {
             contentDescription = "Change Language",
             modifier = Modifier
                 .size(40.dp)
-                .padding(top = 10.dp,end = 10.dp)
+                .padding(top = 10.dp, end = 10.dp)
                 .align(Alignment.TopEnd)
                 .clickable { isLanguageDialogOpen = true },
-            tint = Color.Unspecified
+            tint = Color.Black,
         )
 
         if (isLanguageDialogOpen) {
@@ -316,6 +331,7 @@ fun Screen3(navController: NavController, context: Context) {
         }
     }
 }
+
 
 
 @Composable
