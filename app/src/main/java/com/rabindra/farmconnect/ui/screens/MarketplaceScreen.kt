@@ -1,6 +1,8 @@
 package com.rabindra.farmconnect.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.rabindra.farmconnect.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("NewApi")
@@ -33,10 +36,20 @@ fun MarketplaceScreen(navController: NavHostController) {
     var quantity by remember { mutableStateOf("") }
 
     val crops = listOf(
-        Crop("Tomatoes", "50", "John Doe", "California", "2024-12-31", 10, R.drawable.img_1),
-        Crop("Potatoes", "30", "Jane Smith", "Texas", "2024-12-20", 20, R.drawable.img_2),
-        Crop("Carrots", "40", "Robert Brown", "Florida", "2024-12-25", 15, R.drawable.img_3)
+        Crop("Tomatoes", "50", "John Doe", "Maharashtra, India", "2024-12-31", 10, R.drawable.img_1),
+        Crop("Potatoes", "30", "Jane Smith", "Uttar Pradesh, India", "2024-12-20", 20, R.drawable.img_2),
+        Crop("Carrots", "40", "Robert Brown", "Himachal Pradesh, India", "2024-12-25", 15, R.drawable.img_3),
+        Crop("Rice", "55", "Amit Kumar", "Punjab, India", "2024-12-15", 50, R.drawable.img_5),
+        Crop("Wheat", "45", "Priya Sharma", "Rajasthan, India", "2024-12-28", 60, R.drawable.img_6),
+        Crop("Onions", "35", "Vikram Singh", "Tamil Nadu, India", "2024-12-22", 30, R.drawable.img_7),
+        Crop("Spinach", "25", "Deepak Yadav", "Karnataka, India", "2024-12-10", 40, R.drawable.img_8),
+        Crop("Cabbage", "28", "Anjali Verma", "Kerala, India", "2024-12-18", 25, R.drawable.img_9),
+        Crop("Cauliflower", "50", "Ravi Patel", "Gujarat, India", "2024-12-27", 20, R.drawable.img_10),
+        Crop("Chilies", "60", "Suresh Reddy", "Andhra Pradesh, India", "2024-12-30", 15, R.drawable.img_11),
+        Crop("Lettuce", "45", "Neha Gupta", "Madhya Pradesh, India", "2024-12-23", 18, R.drawable.img_12),
+        Crop("Green Beans", "40", "Sandeep Rawat", "Bihar, India", "2024-12-26", 35, R.drawable.img_13)
     )
+
 
     Column(
         modifier = Modifier
@@ -65,7 +78,8 @@ fun MarketplaceScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Harvest Date") },
             placeholder = { Text("Enter harvest date (YYYY-MM-DD)") },
-            isError = harvestDate.isNotEmpty() && runCatching { LocalDate.parse(harvestDate) }.isFailure
+            isError = harvestDate.isNotEmpty() && !isDateValid(harvestDate),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
         )
 
         OutlinedTextField(
@@ -73,7 +87,8 @@ fun MarketplaceScreen(navController: NavHostController) {
             onValueChange = { quantity = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Minimum Quantity") },
-            placeholder = { Text("Enter minimum quantity in kg") }
+            placeholder = { Text("Enter minimum quantity in kg") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -143,15 +158,29 @@ fun CropTypeDropdown(
 
 @SuppressLint("NewApi")
 fun isDateRelevant(harvestDate: String, inputDate: String): Boolean {
-    val cropDate = LocalDate.parse(harvestDate, DateTimeFormatter.ISO_DATE)
-    val filterDate = if (inputDate.isNotEmpty()) {
-        LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE)
-    } else {
-        LocalDate.now()
-    }
+    return try {
+        val cropDate = LocalDate.parse(harvestDate, DateTimeFormatter.ISO_DATE)
+        val filterDate = if (inputDate.isNotEmpty()) {
+            LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE)
+        } else {
+            LocalDate.now()
+        }
 
-    // Show crops harvested up to 7 days before and all future dates
-    return !cropDate.isBefore(filterDate.minusDays(7))
+        // Show crops harvested up to 7 days before and all future dates
+        !cropDate.isBefore(filterDate.minusDays(7))
+    } catch (e: DateTimeParseException) {
+        false
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun isDateValid(date: String): Boolean {
+    return try {
+        LocalDate.parse(date, DateTimeFormatter.ISO_DATE)
+        true
+    } catch (e: DateTimeParseException) {
+        false
+    }
 }
 
 @Composable

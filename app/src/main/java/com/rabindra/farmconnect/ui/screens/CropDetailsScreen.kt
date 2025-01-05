@@ -19,9 +19,15 @@ fun CropDetailsScreen(cropId: String, navController: NavHostController) {
         Crop("Tomatoes", "50", "John Doe", "California", "2024-12-31", 10, R.drawable.img_1),
         Crop("Potatoes", "30", "Jane Smith", "Texas", "2024-12-20", 20, R.drawable.img_2),
         Crop("Carrots", "40", "Robert Brown", "Florida", "2024-12-25", 15, R.drawable.img_3),
-        Crop("Tomatoes", "50", "John Doe", "California", "2024-12-31", 10, R.drawable.img_1),
-        Crop("Potatoes", "30", "Jane Smith", "Texas", "2024-12-20", 20, R.drawable.img_2),
-        Crop("Carrots", "40", "Robert Brown", "Florida", "2024-12-25", 15, R.drawable.img_3)
+        Crop("Rice", "55", "Amit Kumar", "Punjab, India", "2024-12-15", 50, R.drawable.img_5),
+        Crop("Wheat", "45", "Priya Sharma", "Rajasthan, India", "2024-12-28", 60, R.drawable.img_6),
+        Crop("Onions", "35", "Vikram Singh", "Tamil Nadu, India", "2024-12-22", 30, R.drawable.img_7),
+        Crop("Spinach", "25", "Deepak Yadav", "Karnataka, India", "2024-12-10", 40, R.drawable.img_8),
+        Crop("Cabbage", "28", "Anjali Verma", "Kerala, India", "2024-12-18", 25, R.drawable.img_9),
+        Crop("Cauliflower", "50", "Ravi Patel", "Gujarat, India", "2024-12-27", 20, R.drawable.img_10),
+        Crop("Chilies", "60", "Suresh Reddy", "Andhra Pradesh, India", "2024-12-30", 15, R.drawable.img_11),
+        Crop("Lettuce", "45", "Neha Gupta", "Madhya Pradesh, India", "2024-12-23", 18, R.drawable.img_12),
+        Crop("Green Beans", "40", "Sandeep Rawat", "Bihar, India", "2024-12-26", 35, R.drawable.img_13)
     )
 
     val crop = crops.find { it.type == cropId } // Find crop by ID (here, crop type is used as ID)
