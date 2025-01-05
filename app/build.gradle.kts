@@ -53,6 +53,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.play.services.maps)
+    implementation (libs.itext7.core)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
