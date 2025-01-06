@@ -58,6 +58,7 @@ fun ConfirmationScreen(navController: NavController, contractId: String) {
         }
     }
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
