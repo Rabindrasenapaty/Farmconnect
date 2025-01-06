@@ -3,22 +3,23 @@ package com.rabindra.farmconnect.ui.screens
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-
 @Composable
 fun ChatScreen(navController: NavController, contractId: String) {
     // State for the chat message and negotiation price
     var chatMessage by remember { mutableStateOf(TextFieldValue("")) }
     var negotiationPrice by remember { mutableStateOf(TextFieldValue("")) }
 
-    // State to show the chat messages
+    // State to show the chat messages (use more advanced management for real-time updates)
     var chatMessages = remember { mutableStateListOf("Farmer: Hello, I'd like to discuss the price.", "Contractor: Sure, what are your thoughts?") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -26,40 +27,40 @@ fun ChatScreen(navController: NavController, contractId: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Chat Messages (dummy messages for now)
+        // Chat Messages (improved for styling)
         Column(modifier = Modifier.fillMaxHeight(0.7f)) {
             chatMessages.forEach { message ->
-                Text(message)
+                val isFarmerMessage = message.startsWith("Farmer:")
+                Text(
+                    text = message,
+                    color = if (isFarmerMessage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Input field for the chat message
-        BasicTextField(
+        // Input field for the chat message (using OutlinedTextField)
+        OutlinedTextField(
             value = chatMessage,
             onValueChange = { chatMessage = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray),
-            decorationBox = { innerTextField ->
-                Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    innerTextField()
-                }
-            }
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            label = { Text("Message") },
+            singleLine = false,
+            maxLines = 4
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Input field for the negotiation price
-        BasicTextField(
+        OutlinedTextField(
             value = negotiationPrice,
             onValueChange = { negotiationPrice = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray),
-            decorationBox = { innerTextField ->
-                Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    innerTextField()
-                    Text("Propose Price: $", modifier = Modifier.align(Alignment.CenterVertically))
-                }
-            }
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            label = { Text("Propose Price ($)") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -83,3 +84,4 @@ fun ChatScreen(navController: NavController, contractId: String) {
         }
     }
 }
+

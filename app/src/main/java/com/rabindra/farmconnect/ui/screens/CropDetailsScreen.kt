@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rabindra.farmconnect.R
-
 @Composable
 fun CropDetailsScreen(cropId: String, navController: NavHostController) {
     // Placeholder crops list (simulate fetching from database or repository)
@@ -70,15 +69,18 @@ fun CropDetailsScreen(cropId: String, navController: NavHostController) {
                 Text("Contact Farmer")
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = {
-                navController.navigate("negotiate/${crop.type}/100/600/550")
-
-            },modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = {
+                    navController.navigate("negotiate/${crop.type}/100/600/550")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text("Negotiate Price")
             }
 
-
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -90,6 +92,29 @@ fun CropDetailsScreen(cropId: String, navController: NavHostController) {
             }
         }
     } else {
-        Text("Crop not found!", modifier = Modifier.fillMaxSize(), style = MaterialTheme.typography.bodyLarge)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Crop not found!",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Back to Crops List")
+            }
+        }
     }
 }
+
+// Data class for Crop (example)
+

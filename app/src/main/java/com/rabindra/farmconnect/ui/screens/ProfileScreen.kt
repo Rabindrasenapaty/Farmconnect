@@ -18,6 +18,17 @@ fun ProfileScreen(userType: String?) {
     var farmSize by remember { mutableStateOf("") } // For farmers
     var preferredCrops by remember { mutableStateOf("") } // For buyers
 
+    var isSaving by remember { mutableStateOf(false) }
+    var feedbackMessage by remember { mutableStateOf("") }
+
+    // Validation for required fields
+    fun isValidInput(): Boolean {
+        return name.isNotEmpty() &&
+                email.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                phone.isNotEmpty() && phone.all { it.isDigit() } &&
+                address.isNotEmpty() && (userType != "farmer" || farmSize.isNotEmpty()) && (userType != "buyer" || preferredCrops.isNotEmpty())
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,8 +64,13 @@ fun ProfileScreen(userType: String?) {
             value = email,
             onValueChange = { email = it },
             label = { Text("Email Address") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
         )
+
+        if (email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Text("Please enter a valid email address", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -62,8 +78,13 @@ fun ProfileScreen(userType: String?) {
             value = phone,
             onValueChange = { phone = it },
             label = { Text("Phone Number") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = phone.isNotEmpty() && phone.any { !it.isDigit() }
         )
+
+        if (phone.isNotEmpty() && phone.any { !it.isDigit() }) {
+            Text("Please enter a valid phone number", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -82,8 +103,13 @@ fun ProfileScreen(userType: String?) {
                 value = farmSize,
                 onValueChange = { farmSize = it },
                 label = { Text("Farm Size (in acres)") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = farmSize.isNotEmpty() && farmSize.toFloatOrNull() == null
             )
+
+            if (farmSize.isNotEmpty() && farmSize.toFloatOrNull() == null) {
+                Text("Please enter a valid farm size", color = MaterialTheme.colorScheme.error)
+            }
         } else if (userType == "buyer") {
             OutlinedTextField(
                 value = preferredCrops,
@@ -98,11 +124,32 @@ fun ProfileScreen(userType: String?) {
         // Save Button
         Button(
             onClick = {
-                // Save profile changes logic
+                if (isValidInput()) {
+                    // Start saving logic (e.g., saving to a database or API)
+                    isSaving = true
+                    feedbackMessage = "Saving..."
+                    // Simulate save operation (replace with actual logic)
+                    // After saving, update feedback
+                    isSaving = false
+                    feedbackMessage = "Profile updated successfully!"
+                } else {
+                    feedbackMessage = "Please fill in all fields correctly."
+                }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isValidInput() && !isSaving
         ) {
-            Text("Save Changes")
+            if (isSaving) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text("Save Changes")
+            }
+        }
+
+        // Feedback message
+        if (feedbackMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(feedbackMessage, color = if (feedbackMessage.contains("successfully")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
         }
     }
 }
