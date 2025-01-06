@@ -1,6 +1,8 @@
 package com.rabindra.farmconnect.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -8,58 +10,58 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FContractDetailsScreen(contractId: String, navController: NavHostController) {
-    var status by remember { mutableStateOf("Pending") }
+    val contract = Contract("Wheat", "John Doe", "₹50,000", "1 Jan 2025 - 31 Jan 2025") // Replace with real data
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Contract Summary
-        Text(text = "Contract Summary for $contractId", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("Terms: Agreement between Farmer and Buyer")
-        Text("Timeline: Start Date - End Date")
-        Text("Parties Involved: Farmer, Buyer")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Status Tracker
-        Text("Status: $status", style = MaterialTheme.typography.bodyLarge)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Status tracker buttons
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { status = "Accepted" }) {
-                Text("Accept")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Contract Details") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            // Contract Summary Section
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Crop: ${contract.crop}", style = MaterialTheme.typography.titleMedium)
+                    Text("Farmer: ${contract.farmerName}")
+                    Text("Price: ${contract.price}")
+                    Text("Timeline: ${contract.timeline}")
+                }
             }
-            Button(onClick = { status = "In Progress" }) {
-                Text("In Progress")
-            }
-            Button(onClick = { status = "Completed" }) {
-                Text("Complete")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Back to Contracts Button
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Back to Contracts")
             }
         }
+    }}
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Button to upload delivery proof (Farmer only)
-        Button(onClick = {
-            // Upload delivery proof logic
-        }) {
-            Text("Upload Delivery Proof")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Back Button
-        Button(onClick = {
-            navController.popBackStack()
-        }) {
-            Text("Back to Contracts")
-        }
-    }
-}

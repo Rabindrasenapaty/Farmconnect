@@ -13,9 +13,14 @@ fun BuyerContractsScreen(navigateToContractDetails: (String) -> Unit) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Active Contracts", "Completed Contracts")
 
-    // Sample data: Replace this with data from your database
-    val activeContracts = List(5) { index -> "Active Contract #$index" }
-    val completedContracts = List(5) { index -> "Completed Contract #$index" }
+    // Sample contract data
+    val activeContracts = remember { mutableStateListOf(
+        Contract("Wheat", "John Doe", "₹50,000", "1 Jan 2025 - 31 Jan 2025"),
+        Contract("Rice", "Jane Smith", "₹30,000", "15 Jan 2025 - 20 Jan 2025")
+    ) }
+    val completedContracts = remember { mutableStateListOf(
+        Contract("Corn", "Alice Brown", "₹40,000", "1 Dec 2024 - 15 Dec 2024")
+    ) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Tabs for Active and Completed Contracts
@@ -32,57 +37,71 @@ fun BuyerContractsScreen(navigateToContractDetails: (String) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Display Contracts Based on Selected Tab
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            // Display Active Contracts
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             if (selectedTab == 0) {
                 items(activeContracts.size) { index ->
-                    val contractId = "C$index"
-                    Card(
-                        onClick = { navigateToContractDetails(contractId) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = activeContracts[index])
-                            Spacer(modifier = Modifier.weight(1f))
-                            TextButton(onClick = { navigateToContractDetails(contractId) }) {
-                                Text("View Details")
-                            }
+                    ContractCard(
+                        contract = activeContracts[index],
+                        onViewDetails = { navigateToContractDetails("Active-$index") },
+                        onMarkCompleted = {
+                            val completedContract = activeContracts.removeAt(index)
+                            completedContracts.add(completedContract)
                         }
-                    }
+                    )
+                }
+            } else {
+                items(completedContracts.size) { index ->
+                    ContractCard(
+                        contract = completedContracts[index],
+                        onViewDetails = { navigateToContractDetails("Completed-$index") },
+                        onMarkCompleted = null // Completed contracts don't need this action
+                    )
                 }
             }
-            // Display Completed Contracts
-            else {
-                items(completedContracts.size) { index ->
-                    val contractId = "C$index"
-                    Card(
-                        onClick = { navigateToContractDetails(contractId) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = completedContracts[index])
-                            Spacer(modifier = Modifier.weight(1f))
-                            TextButton(onClick = { navigateToContractDetails(contractId) }) {
-                                Text("View Details")
-                            }
-                        }
+        }
+    }
+}
+
+@Composable
+fun ContractCard(
+    contract: Contract,
+    onViewDetails: () -> Unit,
+    onMarkCompleted: (() -> Unit)? // Nullable if marking is not needed
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Crop: ${contract.crop}", style = MaterialTheme.typography.titleMedium)
+            Text("Farmer: ${contract.farmerName}")
+            Text("Price: ${contract.price}")
+            Text("Timeline: ${contract.timeline}")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextButton(onClick = onViewDetails) {
+                    Text("View Details")
+                }
+                onMarkCompleted?.let {
+                    TextButton(onClick = it) {
+                        Text("Mark Completed")
                     }
                 }
             }
         }
     }
 }
+
+data class Contract(
+    val crop: String,
+    val farmerName: String,
+    val price: String,
+    val timeline: String
+)

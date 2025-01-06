@@ -8,11 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
 @Composable
 fun ContactFarmerScreen() {
     // State to hold the message typed by the buyer
     var message by remember { mutableStateOf("") }
+    var messageHistory by remember { mutableStateOf(listOf<String>()) } // Holds history of messages
 
     Column(
         modifier = Modifier
@@ -48,35 +48,48 @@ fun ContactFarmerScreen() {
         // Send Message Button
         Button(
             onClick = {
-                // Handle the action of sending the message (e.g., save to the database)
-                // For now, you can just print it or show a toast
-                println("Message Sent: $message")
+                if (message.isNotBlank()) {
+                    // Handle the action of sending the message
+                    messageHistory = messageHistory + "Buyer: $message" // Add buyer's message to history
+                    message = "" // Clear the message input field
+
+                    // Simulate a response from the farmer
+                    messageHistory = messageHistory + "Farmer: [Farmer's Response Here]"
+                }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = message.isNotBlank() // Disable the button if the message is blank
         ) {
             Text("Send Message")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Placeholder for message history (can be shown after integrating database)
+        // Message History (now dynamic)
         Text(
-            text = "Message History (Placeholder)",
+            text = "Message History",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 16.dp)
         )
 
-        // Placeholder for showing sent and received messages (can be dynamic once the database is connected)
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Buyer: $message", style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(8.dp))
-                // Placeholder for Farmer's response (this will be dynamic once the database is connected)
-                Text("Farmer: [Farmer's Response Here]", style = MaterialTheme.typography.bodyMedium)
+        // Display message history
+        Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+            messageHistory.forEachIndexed { index, message ->
+                val isBuyerMessage = message.startsWith("Buyer")
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isBuyerMessage) Color(0xFFE0F7FA) else Color(0xFFF1F8E9)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(message, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
             }
         }
     }
 }
+

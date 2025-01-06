@@ -21,7 +21,6 @@ data class BuyerContract(
     val contractorName: String,
     var status: String = "pending"
 )
-
 @Composable
 fun FBuyerContractsScreen(navController: NavController) {
     val contracts = remember {
@@ -41,34 +40,27 @@ fun FBuyerContractsScreen(navController: NavController) {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        BasicTextField(
+        // Location Filter
+        TextField(
             value = locationQuery,
             onValueChange = { locationQuery = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray),
-            decorationBox = { innerTextField ->
-                Row(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-                    Text("Location: ")
-                    innerTextField()
-                }
-            }
+            label = { Text("Location") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        BasicTextField(
+        // Crop Type Filter
+        TextField(
             value = cropQuery,
             onValueChange = { cropQuery = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray),
-            decorationBox = { innerTextField ->
-                Row(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-                    Text("Crop Type: ")
-                    innerTextField()
-                }
-            }
+            label = { Text("Crop Type") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp).border(1.dp, Color.Gray)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Display contracts
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             if (filteredContracts.isEmpty()) {
                 item {
