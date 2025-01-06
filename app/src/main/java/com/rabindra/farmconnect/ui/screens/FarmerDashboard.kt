@@ -152,7 +152,7 @@ private val dashboardOptions = listOf(
     DashboardOption("Add Contract", Color(0xFF81C784), "add_contract"),
     DashboardOption("My Contracts", Color(0xFF4CAF50), "my_contracts"),
     DashboardOption("Crop Analytics", Color(0xFF388E3C), "crop_analytics"),
-    DashboardOption("Buyer Contracts", Color(0xFF1B5E20), "buyer_contracts")
+    DashboardOption("Buyer Contracts", Color(0xFF1B5E36), "buyer_contracts")
 )
 
 data class DashboardOption(

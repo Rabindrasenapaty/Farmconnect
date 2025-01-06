@@ -264,7 +264,7 @@ fun Screen3(navController: NavController, context: Context) {
 
                 // Display Image
                 Image(
-                    painter = painterResource(id = R.drawable.img1),
+                    painter = painterResource(id = R.drawable.farmconnectlogo),
                     contentDescription = "App Logo",
                     modifier = Modifier
                         .size(200.dp)
