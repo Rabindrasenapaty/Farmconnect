@@ -28,7 +28,6 @@ import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Image
 import com.itextpdf.layout.element.Paragraph
 import java.io.OutputStream
-
 @RequiresApi(Build.VERSION_CODES.Q)
 fun generatePDF(context: Context, contractId: String, paymentMethod: String) {
     val fileName = "Agreement_Contract_$contractId.pdf"
@@ -48,6 +47,7 @@ fun generatePDF(context: Context, contractId: String, paymentMethod: String) {
             val pdfDocument = PdfDocument(pdfWriter)
             val document = Document(pdfDocument)
 
+            // Add logo (optional)
             val drawableId = context.resources.getIdentifier("farmconnectlogo", "drawable", context.packageName)
             val logoInputStream = context.resources.openRawResource(drawableId)
             val logoData = ImageDataFactory.create(logoInputStream.readBytes())
@@ -60,37 +60,42 @@ fun generatePDF(context: Context, contractId: String, paymentMethod: String) {
             document.add(logoImage)
 
             val paymentDetails = if (paymentMethod == "Cash on Delivery") {
-                "The buyer agrees to pay after the successful transportation of crops."
+                "The buyer agrees to pay the full amount upon successful delivery of the crops."
             } else {
-                "The buyer has paid ₹20,000 upfront for the crops."
+                "The buyer has paid ₹25,000 in advance via $paymentMethod."
             }
 
             val content = """
-                Agreement Contract Form
+                Contract Agreement
                 -----------------------
-                Date: 2025-01-04
+                Date: 2025-01-07
                 Contract ID: $contractId
 
                 Parties Involved:
-                - Farmer: Amit Kumar
+                - Farmer: Rajesh Kumar
+                  Address: Village Road, Patna, Bihar
                   Contact: +91-9876543210
-                - Buyer: Vikram Singh
+                  Email: rajesh.kumar@example.com
+                
+                - Buyer: Pooja Sharma
+                  Address: 123, MG Road, Jaipur, Rajasthan
                   Contact: +91-9876543211
+                  Email: pooja.sharma@example.com
 
                 Agreement Terms:
                 1. Crop Type: Wheat
-                2. Quantity: 100 kg
-                3. Agreed Price: ₹20,000
-                4. Delivery Location: Delhi
-                5. Delivery Date: 2025-01-10
+                2. Quantity: 200 kg
+                3. Agreed Price: ₹25,000
+                4. Delivery Location: Jaipur, Rajasthan
+                5. Delivery Date: 2025-01-15
 
                 Payment Mode: $paymentMethod
                 $paymentDetails
 
                 Terms & Conditions:
-                - The buyer agrees to pay the full amount upon delivery.
-                - The farmer ensures the quality of the crops as agreed.
-                - Disputes will be resolved under the jurisdiction of Delhi courts.
+                - The buyer agrees to pay the full amount upon delivery (if not prepaid).
+                - The farmer ensures the quality and quantity of the crops as agreed.
+                - Disputes will be resolved under the jurisdiction of Jaipur, Rajasthan courts.
 
                 Signature Section:
                 Farmer's Signature: _______________  Date: ____________
@@ -99,7 +104,22 @@ fun generatePDF(context: Context, contractId: String, paymentMethod: String) {
                 This contract is legally binding and has been signed by both parties.
             """.trimIndent()
             document.add(Paragraph(content))
+            for (i in 1..pdfDocument.numberOfPages) {
+                val page = pdfDocument.getPage(i)
+                val canvas = PdfCanvas(page)
 
+                val gs1 = com.itextpdf.kernel.pdf.extgstate.PdfExtGState()
+                gs1.fillOpacity = 0.1f
+                canvas.setExtGState(gs1)
+
+                val watermarkImage = Image(logoData)
+                watermarkImage.scaleToFit(300f, 300f)
+                watermarkImage.setFixedPosition(
+                    (page.pageSize.width - watermarkImage.imageScaledWidth) / 2,
+                    (page.pageSize.height - watermarkImage.imageScaledHeight) / 2
+                )
+                document.add(watermarkImage)
+            }
             document.close()
             Toast.makeText(context, "PDF generated successfully!", Toast.LENGTH_LONG).show()
         } else {
@@ -124,7 +144,7 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Agreement Contract Form",
+            text = "Contract Agreement",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -134,34 +154,39 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
 
         Text(
             text = """
-                **Agreement Details**
-                Date: 2025-01-04
+                **Contract Agreement Details**
+                Date: 2025-01-07
                 Contract ID: $contractId
-
+                
                 **Parties Involved:**
-                - Farmer: Amit Kumar
+                - Farmer: Rajesh Kumar
+                  Address: Village Road, Patna, Bihar
                   Contact: +91-9876543210
-                - Buyer: Vikram Singh
+                  Email: rajesh.kumar@example.com
+                
+                - Buyer: Pooja Sharma
+                  Address: 123, MG Road, Jaipur, Rajasthan
                   Contact: +91-9876543211
+                  Email: pooja.sharma@example.com
 
                 **Agreement Terms:**
                 1. Crop Type: Wheat
-                2. Quantity: 100 kg
-                3. Agreed Price: ₹20,000
-                4. Delivery Location: Delhi
-                5. Delivery Date: 2025-01-10
+                2. Quantity: 200 kg
+                3. Agreed Price: ₹25,000
+                4. Delivery Location: Jaipur, Rajasthan
+                5. Delivery Date: 2025-01-15
 
                 **Payment Details:**
                 ${if (paymentMethod == "Cash on Delivery") {
-                "The buyer agrees to pay after the successful transportation of crops."
+                "The buyer agrees to pay the full amount upon successful delivery of the crops."
             } else {
-                "The buyer has paid ₹20,000 for the crops upfront via $paymentMethod."
+                "The buyer has paid ₹25,000 in advance via $paymentMethod."
             }}
 
                 **Terms & Conditions:**
-                - The buyer agrees to pay the full amount upon delivery.
-                - The farmer ensures the quality of the crops as agreed.
-                - Disputes will be resolved under the jurisdiction of Delhi courts.
+                - The buyer agrees to pay the full amount upon delivery (if not prepaid).
+                - The farmer ensures the quality and quantity of the crops as agreed.
+                - Disputes will be resolved under the jurisdiction of Jaipur, Rajasthan courts.
 
                 **Signature Section:**
                 Farmer's Signature: _______________  Date: ____________
@@ -178,7 +203,7 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
         // Button to download the agreement as a PDF
         Button(
             onClick = {
-                generatePDF(context, contractId)
+                generatePDF(context, contractId, paymentMethod)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -194,4 +219,6 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
         }
     }
 }
+
+
 
