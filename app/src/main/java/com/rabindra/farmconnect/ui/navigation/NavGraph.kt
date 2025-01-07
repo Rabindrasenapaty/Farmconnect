@@ -180,6 +180,14 @@ fun NavGraph(navController: NavHostController) {
             val contractId = backStackEntry.arguments?.getString("contractId") ?: "Unknown"
             AgreementScreen(paymentMethod = paymentMethod, contractId = contractId, navController = navController)
         }
+        composable(
+            route = "View_details_FarmerSide_MyContract/{contractId}",
+            arguments = listOf(navArgument("contractId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val contractId = backStackEntry.arguments?.getString("contractId") ?: ""
+            ContractDetailsScreen(contractId = contractId, navController = navController)
+        }
+
 
     }
         }

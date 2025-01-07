@@ -101,7 +101,7 @@ fun ContractItem(contract: String, status: String, navController: NavHostControl
             Button(
                 onClick = {
                     // Navigate to contract details
-                    navController.navigate("contract_details/$contract")
+                    navController.navigate("View_details_FarmerSide_MyContract/$contract")
                 }
             ) {
                 Text("View Details")
