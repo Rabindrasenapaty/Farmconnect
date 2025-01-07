@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
@@ -80,8 +81,7 @@ fun ConfirmationScreen(navController: NavController, contractId: String) {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -107,50 +107,6 @@ fun ConfirmationScreen(navController: NavController, contractId: String) {
                     .size(80.dp)
                     .clip(CircleShape)
             )
-
-            // Payment Mode Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFEFAE0)),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Select Payment Mode",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Button(onClick = { isDropdownExpanded = !isDropdownExpanded }) {
-                        Text(selectedPaymentMode)
-                    }
-
-                    if (isDropdownExpanded) {
-                        Column {
-                            listOf("Cash on Delivery", "Online Payment").forEach { mode ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedPaymentMode = mode
-                                            isDropdownExpanded = false
-                                        }
-                                        .padding(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    RadioButton(
-                                        selected = selectedPaymentMode == mode,
-                                        onClick = { selectedPaymentMode = mode }
-                                    )
-                                    Text(text = mode, style = MaterialTheme.typography.bodyLarge)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
             // Vehicle Selection Section
             Card(
@@ -201,18 +157,28 @@ fun ConfirmationScreen(navController: NavController, contractId: String) {
             }
 
             if (isPaymentSuccessful) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Payment Successful",
-                        tint = Color(0xFF606C38)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Payment Completed!",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color(0xFF606C38)
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp) // Add padding from sides
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Payment Successful",
+                            tint = Color.Green
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Payment Completed!",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Green
+                        )
+                    }
                 }
             }
 
@@ -260,13 +226,23 @@ fun ConfirmationScreen(navController: NavController, contractId: String) {
             }
 
             // Thank You Note
-            if (isPaymentSuccessful) {
-                Text(
-                    text = "Thank you for your payment! Your contract will be processed shortly.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF606C38),
-                    textAlign = TextAlign.Center
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp) // Add padding from sides
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color.Black.copy(alpha = 0.3f))
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isPaymentSuccessful) {
+                    Text(
+                        text = "Thank you for using our app",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         }
     }
