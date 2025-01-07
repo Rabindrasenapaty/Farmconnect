@@ -102,7 +102,6 @@ fun BuyerDashboard(navigateToOption: (Any) -> Unit) {
                     backgroundColor = Color.Red,
                     onClick = { navigateToOption("buyer_contract_screen") } // Navigate to Buyer Contracts Screen
                 )
-
             }
         }
     }
