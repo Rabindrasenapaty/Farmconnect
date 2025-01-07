@@ -86,9 +86,7 @@ fun generatePDF(context: Context, contractId: String) {
                 - The farmer ensures the quality of the crops as agreed.
                 - Disputes will be resolved under the jurisdiction of Delhi courts.
 
-                Signature Section:
-                Farmer's Signature: _______________  Date: ____________
-                Buyer's Signature: _______________  Date: ____________
+                
 
                 This contract is legally binding and has been signed by both parties.
             """.trimIndent()
@@ -171,9 +169,7 @@ fun AgreementFormScreen(navController: NavController, contractId: String, contex
                 Text("- The farmer ensures the quality of the crops as agreed.")
                 Text("- Disputes will be resolved under the jurisdiction of Delhi courts.")
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("**Signature Section:**")
-                Text("Farmer's Signature: _______________  Date: ____________")
-                Text("Buyer's Signature: _______________  Date: ____________")
+
             }
         }
 

@@ -35,7 +35,7 @@ fun NavGraph(navController: NavHostController) {
                     "browse_produce" -> navController.navigate("marketplace")
                     "post_requirements" -> navController.navigate("post_requirements")
                     "buyer_contract_screen" -> navController.navigate("buyer_contract_screen")
-                    "notifications" -> navController.navigate("notifications")
+                    "Notifications" -> navController.navigate("Buyer_Notifications")
                     "profile" -> navController.navigate("profile/buyer")
                 }
             }
@@ -112,7 +112,7 @@ fun NavGraph(navController: NavHostController) {
                 navController = navController
             )
         }
-        composable("notifications") {
+        composable("Buyer_Notifications") {
             NotificationsScreen(navController = navController)
         }
         composable("payment_details/{paymentId}") { backStackEntry ->

@@ -15,20 +15,25 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun NotificationsScreen(navController: NavHostController) {
+    // Sample notification data
     val notifications = listOf(
         Notification(
-            "Contract Approved",
-            "Your contract for Tomatoes has been approved.",
-            "contract_details/1",
-            isClickable = TODO()
+            title = "Contract Approved",
+            message = "Your contract for Tomatoes has been approved.",
+            navigationRoute = "contract_details/1",
+            isClickable = true
         ),
         Notification(
-            "New Crop Listing", "Potatoes listed in your preferred location.", "crop_details/2",
-            isClickable = TODO()
+            title = "New Crop Listing",
+            message = "Potatoes listed in your preferred location.",
+            navigationRoute = "crop_details/2",
+            isClickable = true
         ),
         Notification(
-            "Payment Confirmation", "Payment received for the crop you sold.", "payment_details/3",
-            isClickable = TODO()
+            title = "Payment Confirmation",
+            message = "Payment received for the crop you sold.",
+            navigationRoute = "payment_details/3",
+            isClickable = true
         )
     )
 
@@ -46,22 +51,26 @@ fun NotificationsScreen(navController: NavHostController) {
         ) {
             items(notifications) { notification ->
                 NotificationCard(notification = notification) {
-                    navController.navigate(notification.navigationRoute)
+                    if (notification.isClickable) {
+                        navController.navigate(notification.navigationRoute)
+                    }
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun NotificationCard(notification: Notification, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (notification.isClickable) Modifier.clickable { onClick() } else Modifier) // Make clickable based on condition
-            .padding(8.dp),
-        
+            .padding(8.dp)
+            .then(
+                if (notification.isClickable) Modifier.clickable { onClick() }
+                else Modifier
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier
@@ -74,9 +83,8 @@ fun NotificationCard(notification: Notification, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = notification.message, style = MaterialTheme.typography.bodySmall)
             }
-            // Add an icon to indicate the notification type (optional)
             Icon(
-                imageVector = Icons.Default.Notifications, // Replace with relevant icon
+                imageVector = Icons.Default.Notifications, // Notification icon
                 contentDescription = "Notification Icon",
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -84,4 +92,10 @@ fun NotificationCard(notification: Notification, onClick: () -> Unit) {
     }
 }
 
-data class Notification(val title: String, val message: String, val navigationRoute: String, val isClickable: Boolean)
+// Notification data class
+data class Notification(
+    val title: String,
+    val message: String,
+    val navigationRoute: String,
+    val isClickable: Boolean
+)

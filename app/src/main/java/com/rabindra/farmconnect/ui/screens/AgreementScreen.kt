@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -97,9 +100,7 @@ fun generatePDF(context: Context, contractId: String, paymentMethod: String) {
                 - The farmer ensures the quality and quantity of the crops as agreed.
                 - Disputes will be resolved under the jurisdiction of Jaipur, Rajasthan courts.
 
-                Signature Section:
-                Farmer's Signature: _______________  Date: ____________
-                Buyer's Signature: _______________  Date: ____________
+                
 
                 This contract is legally binding and has been signed by both parties.
             """.trimIndent()
@@ -141,7 +142,7 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "Contract Agreement",
@@ -152,55 +153,53 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = """
-                **Contract Agreement Details**
-                Date: 2025-01-07
-                Contract ID: $contractId
-                
-                **Parties Involved:**
-                - Farmer: Rajesh Kumar
-                  Address: Village Road, Patna, Bihar
-                  Contact: +91-9876543210
-                  Email: rajesh.kumar@example.com
-                
-                - Buyer: Pooja Sharma
-                  Address: 123, MG Road, Jaipur, Rajasthan
-                  Contact: +91-9876543211
-                  Email: pooja.sharma@example.com
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFFEFAE0)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Date: 2025-01-07")
+                Text("Contract ID: $contractId")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("**Parties Involved:**")
+                Text("- Farmer: Rajesh Kumar")
+                Text("  Address: Village Road, Patna, Bihar")
+                Text("  Contact: +91-9876543210")
+                Text("  Email: rajesh.kumar@example.com")
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("- Buyer: Pooja Sharma")
+                Text("  Address: 123, MG Road, Jaipur, Rajasthan")
+                Text("  Contact: +91-9876543211")
+                Text("  Email: pooja.sharma@example.com")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("**Agreement Terms:**")
+                Text("1. Crop Type: Wheat")
+                Text("2. Quantity: 200 kg")
+                Text("3. Agreed Price: ₹25,000")
+                Text("4. Delivery Location: Jaipur, Rajasthan")
+                Text("5. Delivery Date: 2025-01-15")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("**Payment Details:**")
+                Text(
+                    text = if (paymentMethod == "Cash on Delivery") {
+                        "The buyer agrees to pay the full amount upon successful delivery of the crops."
+                    } else {
+                        "The buyer has paid ₹25,000 in advance via $paymentMethod."
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("**Terms & Conditions:**")
+                Text("- The buyer agrees to pay the full amount upon delivery (if not prepaid).")
+                Text("- The farmer ensures the quality and quantity of the crops as agreed.")
+                Text("- Disputes will be resolved under the jurisdiction of Jaipur, Rajasthan courts.")
+                Spacer(modifier = Modifier.height(8.dp))
 
-                **Agreement Terms:**
-                1. Crop Type: Wheat
-                2. Quantity: 200 kg
-                3. Agreed Price: ₹25,000
-                4. Delivery Location: Jaipur, Rajasthan
-                5. Delivery Date: 2025-01-15
-
-                **Payment Details:**
-                ${if (paymentMethod == "Cash on Delivery") {
-                "The buyer agrees to pay the full amount upon successful delivery of the crops."
-            } else {
-                "The buyer has paid ₹25,000 in advance via $paymentMethod."
-            }}
-
-                **Terms & Conditions:**
-                - The buyer agrees to pay the full amount upon delivery (if not prepaid).
-                - The farmer ensures the quality and quantity of the crops as agreed.
-                - Disputes will be resolved under the jurisdiction of Jaipur, Rajasthan courts.
-
-                **Signature Section:**
-                Farmer's Signature: _______________  Date: ____________
-                Buyer's Signature: _______________  Date: ____________
-
-                This contract is legally binding and has been signed by both parties.
-            """.trimIndent(),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth()
-        )
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Button to download the agreement as a PDF
         Button(
             onClick = {
                 generatePDF(context, contractId, paymentMethod)
@@ -210,7 +209,8 @@ fun AgreementScreen(paymentMethod: String, contractId: String, navController: Na
             Text("Download Agreement as PDF")
         }
 
-        // Button to navigate back to the confirmation screen
+        Spacer(modifier = Modifier.height(8.dp))
+
         Button(
             onClick = { navController.popBackStack() },
             modifier = Modifier.fillMaxWidth()

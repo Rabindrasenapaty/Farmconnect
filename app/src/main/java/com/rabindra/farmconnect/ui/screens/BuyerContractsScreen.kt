@@ -159,8 +159,4 @@ data class Contract(
     val timeline: String
 )
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewBuyerContractsScreen() {
-    BuyerContractsScreen(navigateToContractDetails = {})
-}
+

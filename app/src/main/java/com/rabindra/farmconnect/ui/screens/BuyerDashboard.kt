@@ -66,7 +66,7 @@ fun BuyerDashboard(navigateToOption: (Any) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                IconButton(onClick = { navigateToOption("notifications") }) {
+                IconButton(onClick = { navigateToOption("Notifications") }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifications",
