@@ -1,32 +1,35 @@
 package com.rabindra.farmconnect.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.rabindra.farmconnect.R
 
 @Composable
 fun SignUpScreen(navController: NavController, userType: String?) {
+    val context = LocalContext.current
+    val firebaseAuth = FirebaseAuth.getInstance()
+
     // State variables for text inputs
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -94,14 +97,54 @@ fun SignUpScreen(navController: NavController, userType: String?) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {
-                        navController.navigate("login/${userType ?: "buyer"}")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(text = stringResource(id = R.string.sign_up))
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White)
+                } else {
+                    Button(
+                        onClick = {
+                            when {
+                                email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() -> {
+                                    Toast.makeText(
+                                        context,
+                                        "Please fill in all fields",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                password != confirmPassword -> {
+                                    Toast.makeText(
+                                        context,
+                                        "Passwords do not match",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                else -> {
+                                    isLoading = true
+                                    firebaseAuth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener { task ->
+                                            isLoading = false
+                                            if (task.isSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Sign-up successful!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                navController.navigate("login/${userType ?: "buyer"}")
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    task.exception?.message ?: "Sign-up failed",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(id = R.string.sign_up))
+                    }
                 }
             }
         }
