@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation (libs.itext7.core)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
 
     testImplementation(libs.junit)
