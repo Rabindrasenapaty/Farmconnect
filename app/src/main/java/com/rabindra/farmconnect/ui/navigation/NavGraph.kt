@@ -56,8 +56,11 @@ fun NavGraph(navController: NavHostController) {
             FarmerNotificationsScreen(navController = navController)
         }
         composable("FaContractDetailsScreen/{contractId}") { backStackEntry ->
-            val contractId = backStackEntry.arguments?.getString("contractId") ?: ""
-            FaContractDetailsScreen(navController = navController, contractId = contractId)
+            // Extract contractId from the route arguments
+            val contractId = backStackEntry.arguments?.getString("contractId")
+            if (contractId != null) {
+                FaContractDetailsScreen(navController, contractId)
+            }
         }
 
 

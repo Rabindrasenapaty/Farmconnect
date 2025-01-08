@@ -10,12 +10,14 @@ import androidx.navigation.NavController
 
 // Simulated contract data for demonstration
 val contracts = listOf(
-    BuyerContract("1", "Wheat", "100 kg", "$200-$300", "Delhi", "Contractor A"),
-    BuyerContract("2", "Rice", "50 kg", "$150-$200", "Mumbai", "Contractor B"),
-    BuyerContract("3", "Corn", "70 kg", "$100-$150", "Chennai", "Contractor C")
+    BuyerContract("1", "Wheat", "100 kg", "200-300", "Digapahndi", "Govind"),
+    BuyerContract("2", "Rice", "50 kg", "150-200", "Aska", "Suresh"),
+    BuyerContract("3", "Corn", "70 kg", "100-150", "Bhubaneswar", "Yashbant")
 )
+
 @Composable
 fun FaContractDetailsScreen(navController: NavController, contractId: String) {
+    // Find the contract details using the contractId
     val contractDetails = remember { contracts.find { it.id == contractId } }
 
     contractDetails?.let {
@@ -89,4 +91,3 @@ fun FaContractDetailsScreen(navController: NavController, contractId: String) {
         }
     }
 }
-
