@@ -118,12 +118,3 @@ fun CropDetailsScreen(cropId: String, navController: NavHostController) {
     }
 }
 
-// Data class for Crop (example)
-@Preview(showBackground = true)
-@Composable
-fun preview() {
-    CropDetailsScreen(
-        cropId = "Tomatoes",
-        navController = NavHostController(LocalContext.current)
-    )
-}

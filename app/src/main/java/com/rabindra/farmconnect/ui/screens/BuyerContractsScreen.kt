@@ -15,12 +15,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.rabindra.farmconnect.R
 
 @Composable
 fun BuyerContractsScreen(navigateToContractDetails: (String) -> Unit) {
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("Active Contracts", "Completed Contracts")
 
     // Sample contract data

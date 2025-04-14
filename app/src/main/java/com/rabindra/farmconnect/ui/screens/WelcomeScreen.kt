@@ -26,10 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.rabindra.farmconnect.R
+import org.bouncycastle.crypto.params.Blake3Parameters.context
 import java.util.*
 
 
@@ -285,7 +288,7 @@ fun Screen3(navController: NavController, context: Context) {
                         modifier = Modifier.weight(1f).padding(end = 8.dp)
                     ) {
                         Text(
-                            text = context.getString(R.string.sell),
+                            text = context.getString(R.string.Farmer),
                             color = Color.White
                         )
                     }
@@ -297,7 +300,7 @@ fun Screen3(navController: NavController, context: Context) {
                         modifier = Modifier.weight(1f).padding(start = 8.dp)
                     ) {
                         Text(
-                            text = context.getString(R.string.buy),
+                            text = context.getString(R.string.Buyer),
                             color = Color.White
                         )
                     }

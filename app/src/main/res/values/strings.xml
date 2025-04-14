@@ -1,8 +1,8 @@
 <resources>
 
     <string name="app_name">FarmConnect</string>
-    <string name="sell">Sell</string>
-    <string name="buy">Buy</string>
+    <string name="Farmer">Farmer</string>
+    <string name="Buyer">Buyer</string>
     <string name="login_form">Login Form</string>
 
     <string name="forgot_password">Forgot Password?</string>

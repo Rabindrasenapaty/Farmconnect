@@ -2,8 +2,8 @@
 
 <resources>
     <string name="app_name">ଫାର୍ମକନେକ୍ଟ</string>
-    <string name="sell">ବିକ୍ରି କରନ୍ତୁ</string>
-    <string name="buy">କିଣନ୍ତୁ</string>
+    <string name="Farmer">ଚାଷୀ</string>
+    <string name="Buyer">କ୍ରେତା</string>
     <string name="login_form">ଲଗଇନ ଫର୍ମ</string>
     <string name="email_address">ଇମେଲ୍ ଠିକଣା</string>
     <string name="password">ପାସୱାର୍ଡ</string>

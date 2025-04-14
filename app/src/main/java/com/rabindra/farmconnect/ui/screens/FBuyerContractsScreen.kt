@@ -1,6 +1,5 @@
 package com.rabindra.farmconnect.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,37 +11,35 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.rabindra.farmconnect.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FBuyerContractsScreen(navController: NavController) {
-    // Initialize contracts with some initial values
-    val contracts = remember { mutableStateListOf(
-        BuyerContract("1", "Wheat", "100 kg", "200-300", "Digapahandi", "Govind"),
-        BuyerContract("2", "Rice", "50 kg", "150-200", "Aska", "Suresh"),
-        BuyerContract("3", "Corn", "70 kg", "100-150", "Bhubaneswar", "Yashbant")
-    )}
+    val contracts = remember {
+        mutableStateListOf(
+            BuyerContract("1", "Wheat", "100 kg", "200-300", "Digapahandi", "Govind"),
+            BuyerContract("2", "Rice", "50 kg", "150-200", "Aska", "Suresh"),
+            BuyerContract("3", "Corn", "70 kg", "100-150", "Bhubaneswar", "Yashbant")
+        )
+    }
 
-    // Get Firebase instance
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val user = auth.currentUser
 
-    // Load requirements once
     LaunchedEffect(user) {
         if (user != null) {
-            val userRequirementsRef = db.collection("users").document(user.uid).collection("requirements")
+            val userRequirementsRef = db.collection("users")
+                .document(user.uid)
+                .collection("requirements")
             userRequirementsRef.get()
                 .addOnSuccessListener { snapshot ->
                     snapshot.documents.forEach { document ->
@@ -52,9 +49,13 @@ fun FBuyerContractsScreen(navController: NavController) {
                         val location = document.getString("location") ?: ""
                         val contractorName = "Buyer"
 
-                        // Add contracts only if they don't already exist
                         val newContract = BuyerContract(
-                            "new_${contracts.size}", cropType, quantity, priceRange, location, contractorName
+                            "new_${contracts.size}",
+                            cropType,
+                            quantity,
+                            priceRange,
+                            location,
+                            contractorName
                         )
                         if (newContract !in contracts) {
                             contracts.add(newContract)
@@ -64,14 +65,12 @@ fun FBuyerContractsScreen(navController: NavController) {
         }
     }
 
-    // Handle search queries
-    var locationQuery by remember { mutableStateOf(TextFieldValue("")) }
-    var cropQuery by remember { mutableStateOf(TextFieldValue("")) }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Filter contracts based on search criteria
     val filteredContracts = contracts.filter { contract ->
-        contract.cropType.contains(cropQuery.text, ignoreCase = true) &&
-                contract.location.contains(locationQuery.text, ignoreCase = true)
+        val query = searchQuery.text.trim().lowercase()
+        contract.cropType.lowercase().contains(query) ||
+                contract.location.lowercase().contains(query)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -90,21 +89,33 @@ fun FBuyerContractsScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            TextField(
-                value = cropQuery,
-                onValueChange = { cropQuery = it },
-                label = { Text("Search by Crop Type") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            TextField(
-                value = locationQuery,
-                onValueChange = { locationQuery = it },
-                label = { Text("Search by Location") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+                    .background(Color.White.copy(alpha = 0.2f), shape = RoundedCornerShape(12.dp)),
+                tonalElevation = 2.dp,
+                shape = RoundedCornerShape(12.dp),
+                color = Color.White.copy(alpha = 0.1f)
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    label = { Text("Search by Crop or Location", color = Color.Black) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color(0xFF213F33),
+                        unfocusedBorderColor = Color(0xFF000000).copy(alpha = 0.7f),
+                        cursorColor = Color.Black,
+                        focusedLabelColor = Color(0xFF2E7D32),
+                        unfocusedLabelColor = Color(0xFF01FF7B).copy(alpha = 0.8f),
+                        focusedTextColor = Color.Black
+                    )
+                )
+            }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredContracts) { contract ->
@@ -114,6 +125,7 @@ fun FBuyerContractsScreen(navController: NavController) {
         }
     }
 }
+
 @Composable
 fun ContractCard(contract: BuyerContract, navController: NavController) {
     Card(
@@ -136,14 +148,15 @@ fun ContractCard(contract: BuyerContract, navController: NavController) {
             Text("Contractor: ${contract.contractorName}")
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Button(onClick = {
-                    // Navigate to contract details screen with the contract ID
                     navController.navigate("FaContractDetailsScreen/${contract.id}")
                 }) {
                     Text("Accept")
                 }
-
             }
         }
     }

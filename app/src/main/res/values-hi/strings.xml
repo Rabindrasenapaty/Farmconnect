@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources>zzzzz
     <string name="app_name">फार्मकनेक्ट</string>
-    <string name="sell">बेचें</string>
-    <string name="buy">खरीदें</string>
+    <string name="Farmer">किसान</string>
+    <string name="Buyer">खरीदार</string>
     <string name="login_form">लॉगिन फॉर्म</string>
     <string name="email_address">ईमेल पता</string>
     <string name="password">पासवर्ड</string>

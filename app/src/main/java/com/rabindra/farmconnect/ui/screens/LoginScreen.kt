@@ -137,7 +137,7 @@ fun LoginScreen(navController: NavController, userType: String?) {
                                             Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
                                             // Navigate based on userType
                                             when (userType) {
-                                                "farmer" -> navController.navigate("verification")
+                                                "farmer" -> navController.navigate("farmer_dashboard")
                                                 "buyer" -> navController.navigate("buyer_dashboard")
                                                 else -> navController.navigate("welcome") // Fallback
                                             }
