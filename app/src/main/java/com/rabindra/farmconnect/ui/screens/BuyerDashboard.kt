@@ -121,13 +121,6 @@ fun BuyerDashboard(navigateToOption: (Any) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DashboardOptionCard(
-                    title = "Browse Produce",
-                    icon = Icons.Default.ShoppingCart,
-                    backgroundColor = Color(0xFF8ecae6), // Light blue
-                    onClick = { navigateToOption("browse_produce") }
-                )
-
-                DashboardOptionCard(
                     title = "Post Requirements",
                     icon = Icons.Default.AddCircle,
                     backgroundColor = Color(0xFF219ebc), // Rich blue
