@@ -74,7 +74,7 @@ fun PaymentScreen(
         if (paymentConfirmed) {
             Button(
                 onClick = {
-                    navController.navigate("agreement/{paymentMethod}/{contractId}")
+                    navController.navigate("agreement/$selectedPaymentMethod/{contractId}")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

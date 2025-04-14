@@ -7,8 +7,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
+
 @Composable
 fun ProfileScreen(userType: String?) {
+    val firestore = FirebaseFirestore.getInstance()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val userId = currentUser?.uid
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -20,6 +27,27 @@ fun ProfileScreen(userType: String?) {
 
     var isSaving by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
+
+    // Fetch user profile data when the screen loads
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            firestore.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    name = document.getString("name") ?: ""
+                    email = document.getString("email") ?: ""
+                    phone = document.getString("phone") ?: ""
+                    address = document.getString("address") ?: ""
+                    if (userType == "farmer") {
+                        farmSize = document.getString("farmSize") ?: ""
+                    } else if (userType == "buyer") {
+                        preferredCrops = document.getString("preferredCrops") ?: ""
+                    }
+                }
+                .addOnFailureListener {
+                    feedbackMessage = "Failed to fetch profile data."
+                }
+        }
+    }
 
     // Validation for required fields
     fun isValidInput(): Boolean {
@@ -36,7 +64,6 @@ fun ProfileScreen(userType: String?) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        // Header
         Text(
             text = "Edit Profile",
             style = MaterialTheme.typography.headlineSmall,
@@ -45,12 +72,10 @@ fun ProfileScreen(userType: String?) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Display user type
         Text(text = "User Type: ${userType ?: "Unknown"}", style = MaterialTheme.typography.bodyMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Common Fields
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -97,19 +122,13 @@ fun ProfileScreen(userType: String?) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Role-Specific Fields
         if (userType == "farmer") {
             OutlinedTextField(
                 value = farmSize,
                 onValueChange = { farmSize = it },
                 label = { Text("Farm Size (in acres)") },
-                modifier = Modifier.fillMaxWidth(),
-                isError = farmSize.isNotEmpty() && farmSize.toFloatOrNull() == null
+                modifier = Modifier.fillMaxWidth()
             )
-
-            if (farmSize.isNotEmpty() && farmSize.toFloatOrNull() == null) {
-                Text("Please enter a valid farm size", color = MaterialTheme.colorScheme.error)
-            }
         } else if (userType == "buyer") {
             OutlinedTextField(
                 value = preferredCrops,
@@ -121,32 +140,49 @@ fun ProfileScreen(userType: String?) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Save Button
         Button(
             onClick = {
-                if (isValidInput()) {
-                    // Start saving logic (e.g., saving to a database or API)
+                if (isValidInput() && userId != null) {
                     isSaving = true
-                    feedbackMessage = "Saving..."
-                    // Simulate save operation (replace with actual logic)
-                    // After saving, update feedback
-                    isSaving = false
-                    feedbackMessage = "Profile updated successfully!"
+                    feedbackMessage = ""
+
+                    val profileData = mutableMapOf(
+                        "name" to name,
+                        "email" to email,
+                        "phone" to phone,
+                        "address" to address
+                    )
+
+                    if (userType == "farmer") {
+                        profileData["farmSize"] = farmSize
+                    } else if (userType == "buyer") {
+                        profileData["preferredCrops"] = preferredCrops
+                    }
+
+                    firestore.collection("users").document(userId)
+                        .set(profileData)
+                        .addOnSuccessListener {
+                            isSaving = false
+                            feedbackMessage = "Profile updated successfully!"
+                        }
+                        .addOnFailureListener {
+                            isSaving = false
+                            feedbackMessage = "Failed to save profile data."
+                        }
                 } else {
                     feedbackMessage = "Please fill in all fields correctly."
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = isValidInput() && !isSaving
+            enabled = !isSaving
         ) {
             if (isSaving) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
                 Text("Save Changes")
             }
         }
 
-        // Feedback message
         if (feedbackMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(feedbackMessage, color = if (feedbackMessage.contains("successfully")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)

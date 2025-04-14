@@ -35,7 +35,7 @@ fun NavGraph(navController: NavHostController) {
                     "browse_produce" -> navController.navigate("marketplace")
                     "post_requirements" -> navController.navigate("post_requirements")
                     "buyer_contract_screen" -> navController.navigate("buyer_contract_screen")
-                    "notifications" -> navController.navigate("notifications")
+                    "Notifications" -> navController.navigate("Buyer_Notifications")
                     "profile" -> navController.navigate("profile/buyer")
                 }
             }
@@ -56,8 +56,11 @@ fun NavGraph(navController: NavHostController) {
             FarmerNotificationsScreen(navController = navController)
         }
         composable("FaContractDetailsScreen/{contractId}") { backStackEntry ->
-            val contractId = backStackEntry.arguments?.getString("contractId") ?: ""
-            FaContractDetailsScreen(navController = navController, contractId = contractId)
+            // Extract contractId from the route arguments
+            val contractId = backStackEntry.arguments?.getString("contractId")
+            if (contractId != null) {
+                FaContractDetailsScreen(navController, contractId)
+            }
         }
 
 
@@ -112,7 +115,7 @@ fun NavGraph(navController: NavHostController) {
                 navController = navController
             )
         }
-        composable("notifications") {
+        composable("Buyer_Notifications") {
             NotificationsScreen(navController = navController)
         }
         composable("payment_details/{paymentId}") { backStackEntry ->
@@ -180,6 +183,14 @@ fun NavGraph(navController: NavHostController) {
             val contractId = backStackEntry.arguments?.getString("contractId") ?: "Unknown"
             AgreementScreen(paymentMethod = paymentMethod, contractId = contractId, navController = navController)
         }
+        composable(
+            route = "View_details_FarmerSide_MyContract/{contractId}",
+            arguments = listOf(navArgument("contractId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val contractId = backStackEntry.arguments?.getString("contractId") ?: ""
+            ContractDetailsScreen(contractId = contractId, navController = navController)
+        }
+
 
     }
         }

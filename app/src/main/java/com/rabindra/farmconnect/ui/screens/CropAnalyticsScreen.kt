@@ -1,31 +1,34 @@
 package com.rabindra.farmconnect.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlin.math.cos
+import kotlin.math.sin
 
+// Data class for Crop Analytics
 data class CropAnalyticsData(
     val cropName: String,
     val price: String,
-    val demandTrend: Float, // Represents percentage demand trend (0-100)
-    val harvestedAmount: Float // Represents harvested amount in metric tons
+    val demandTrend: Float,
+    val harvestedAmount: Float
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,71 +46,106 @@ fun CropAnalyticsScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Crop Analytics", style = MaterialTheme.typography.titleLarge) },
+                title = { Text("Crop Analytics", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFBC6C25)
+                )
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFFEFAE0), // Light background color 1
+                            Color(0xFFDDA15E)  // Light background color 2
+                        )
+                    )
+                )
                 .padding(paddingValues)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
         ) {
-            item {
-                // Pie Chart Section
-                Text(
-                    text = "Demand Trend Distribution",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    DemandPieChart(cropAnalyticsList)
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .background(Color.White, shape = MaterialTheme.shapes.medium)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "Demand Trend Distribution",
+                                color = Color.Black,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                DemandPieChart(cropAnalyticsList)
+                            }
+                        }
+                    }
                 }
-            }
 
-            item {
-                // Bar Chart Section
-                Text(
-                    text = "Harvested Products",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(400.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    HarvestedBarChart(cropAnalyticsList)
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .background(Color.White, shape = MaterialTheme.shapes.medium)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "Harvested Products",
+                                color = Color.Black,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(400.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                HarvestedBarChart(cropAnalyticsList)
+                            }
+                        }
+                    }
                 }
-            }
 
-            item {
-                // Add Spacer before Crop Details to avoid overlap with the Bar Chart
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+                item {
+                    Text(
+                        text = "Crop Details",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
 
-            item {
-                // Crop Details Section
-                Text(
-                    text = "Crop Details",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 10.dp)
-                )
-            }
-
-            items(cropAnalyticsList) { crop ->
-                CropAnalyticsCard(crop)
+                items(cropAnalyticsList) { crop ->
+                    CropAnalyticsCard(crop)
+                }
             }
         }
     }
@@ -116,15 +154,14 @@ fun CropAnalyticsScreen(navController: NavHostController) {
 @Composable
 fun DemandPieChart(cropAnalyticsList: List<CropAnalyticsData>) {
     val totalDemand = cropAnalyticsList.sumOf { it.demandTrend.toDouble() }.toFloat()
-    val colors = listOf(Color.Red, Color.Blue, Color.Green, Color.Cyan, Color.Magenta, Color.Yellow)
+    val colors = listOf(Color(0xFFE57373), Color(0xFF64B5F6), Color(0xFF81C784), Color(0xFF4DD0E1), Color(0xFFBA68C8), Color(0xFFFFD54F))
 
     Canvas(modifier = Modifier.fillMaxSize()) {
         var startAngle = 0f
         cropAnalyticsList.forEachIndexed { index, crop ->
             val sweepAngle = (crop.demandTrend / totalDemand) * 360f
-            val color = colors[index % colors.size]
+            var color = colors[index % colors.size]
 
-            // Draw Pie Segment
             drawArc(
                 color = color,
                 startAngle = startAngle,
@@ -133,22 +170,20 @@ fun DemandPieChart(cropAnalyticsList: List<CropAnalyticsData>) {
                 size = Size(size.width, size.height)
             )
 
-            // Calculate Label Position
-            val angle = startAngle + sweepAngle / 2
-            val radius = size.width / 3
-            val labelX = (size.width / 2 + radius * kotlin.math.cos(Math.toRadians(angle.toDouble()))).toFloat()
-            val labelY = (size.height / 2 + radius * kotlin.math.sin(Math.toRadians(angle.toDouble()))).toFloat()
+            val angleInRadians = Math.toRadians((startAngle + sweepAngle / 2).toDouble())
+            val labelRadius = size.width * 0.35f
+            val labelX = (size.center.x + labelRadius * cos(angleInRadians)).toFloat()
+            val labelY = (size.center.y + labelRadius * sin(angleInRadians)).toFloat()
 
-            // Draw Crop Name and Percentage
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
-                    "${crop.cropName} (${crop.demandTrend.toInt()}%)",
+                    crop.cropName,
                     labelX,
                     labelY,
                     android.graphics.Paint().apply {
-                        textSize = 32f
-                         // BLACK as int
                         textAlign = android.graphics.Paint.Align.CENTER
+                        textSize = 40f
+                        color = Color.Black
                     }
                 )
             }
@@ -158,7 +193,6 @@ fun DemandPieChart(cropAnalyticsList: List<CropAnalyticsData>) {
     }
 }
 
-
 @Composable
 fun HarvestedBarChart(cropAnalyticsList: List<CropAnalyticsData>) {
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -166,79 +200,77 @@ fun HarvestedBarChart(cropAnalyticsList: List<CropAnalyticsData>) {
         val chartWidth = size.width
         val barWidth = chartWidth / (cropAnalyticsList.size * 2)
         val maxHarvested = cropAnalyticsList.maxOf { it.harvestedAmount }
+        val axisPaint = android.graphics.Paint().apply {
+            color = android.graphics.Color.BLACK
+            strokeWidth = 4f
+        }
+        val textPaint = android.graphics.Paint().apply {
+            textAlign = android.graphics.Paint.Align.CENTER
+            textSize = 40f
+            color = android.graphics.Color.BLACK
+        }
+
+        // Draw axes
+        drawContext.canvas.nativeCanvas.apply {
+            drawLine(0f, size.height, chartWidth, size.height, axisPaint)
+            drawLine(0f, size.height, 0f, size.height - chartHeight, axisPaint)
+        }
 
         cropAnalyticsList.forEachIndexed { index, crop ->
             val barHeight = (crop.harvestedAmount / maxHarvested) * chartHeight
             val barX = barWidth * (2 * index + 1)
             val barY = size.height - barHeight
 
-            // Draw Bar
-            drawRoundRect(
-                color = Color.Blue,
+            drawRect(
+                color = Color(0xFF64B5F6),
                 topLeft = Offset(x = barX, y = barY),
-                size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(12.dp.toPx())
+                size = Size(barWidth, barHeight)
             )
 
-            // Draw Crop Name and Harvested Amount
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
                     crop.cropName,
                     barX + barWidth / 2,
-                    size.height + 20.dp.toPx(),
-                    android.graphics.Paint().apply {
-                        textSize = 36f
-                        color = android.graphics.Color.BLACK  // BLACK as int
-                        textAlign = android.graphics.Paint.Align.CENTER
-                    }
-                )
-                drawText(
-                    "${crop.harvestedAmount}T",
-                    barX + barWidth / 2,
-                    barY - 10.dp.toPx(),
-                    android.graphics.Paint().apply {
-                        textSize = 32f
-                        color = android.graphics.Color.DKGRAY  // DKGRAY as int
-                        textAlign = android.graphics.Paint.Align.CENTER
-                    }
+                    size.height + 40, // Adjusted to avoid overlap
+                    textPaint
                 )
             }
         }
     }
 }
 
-
-
 @Composable
 fun CropAnalyticsCard(crop: CropAnalyticsData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = "Crop: ${crop.cropName}",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF37474F)
             )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Market Price: ${crop.price}",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF37474F)
             )
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Demand Trend: ${crop.demandTrend}%",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF37474F)
             )
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Harvested Amount: ${crop.harvestedAmount} Tons",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF37474F)
             )
         }
     }

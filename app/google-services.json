@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283804180172",
+    "project_id": "farmconnect-f8a12",
+    "storage_bucket": "farmconnect-f8a12.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283804180172:android:3ed258843206fead51ac69",
+        "android_client_info": {
+          "package_name": "com.rabindra.farmconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOUDKMDkIgJ594CrAS3zoCMnxD3UyP9MY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

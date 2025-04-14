@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -14,7 +16,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,70 +46,109 @@ fun MarketplaceScreen(navController: NavHostController) {
         Crop("Potatoes", "30", "Jane Smith", "Uttar Pradesh, India", "2024-12-20", 20, R.drawable.img_2),
         Crop("Carrots", "40", "Robert Brown", "Himachal Pradesh, India", "2024-12-25", 15, R.drawable.img_3),
         Crop("Rice", "55", "Amit Kumar", "Punjab, India", "2024-12-15", 50, R.drawable.img_5),
-        Crop("Wheat", "45", "Priya Sharma", "Rajasthan, India", "2024-12-28", 60, R.drawable.img_6),
-        Crop("Onions", "35", "Vikram Singh", "Tamil Nadu, India", "2024-12-22", 30, R.drawable.img_7),
-        Crop("Spinach", "25", "Deepak Yadav", "Karnataka, India", "2024-12-10", 40, R.drawable.img_8),
-        Crop("Cabbage", "28", "Anjali Verma", "Kerala, India", "2024-12-18", 25, R.drawable.img_9),
-        Crop("Cauliflower", "50", "Ravi Patel", "Gujarat, India", "2024-12-27", 20, R.drawable.img_10),
-        Crop("Chilies", "60", "Suresh Reddy", "Andhra Pradesh, India", "2024-12-30", 15, R.drawable.img_11),
-        Crop("Lettuce", "45", "Neha Gupta", "Madhya Pradesh, India", "2024-12-23", 18, R.drawable.img_12),
-        Crop("Green Beans", "40", "Sandeep Rawat", "Bihar, India", "2024-12-26", 35, R.drawable.img_13)
+        Crop("Wheat", "45", "Priya Sharma", "Rajasthan, India", "2024-12-28", 60, R.drawable.img_6)
     )
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("Filter Crops", style = MaterialTheme.typography.headlineSmall)
-
-        CropTypeDropdown(
-            selectedCropType = selectedCropType,
-            onCropTypeSelected = { selectedCropType = it }
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background Gradient
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFFCE38A),
+                            Color(0xFFF38181)
+                        ) // Light Yellow to Soft Red
+                    )
+                )
         )
-
-        OutlinedTextField(
-            value = locationQuery,
-            onValueChange = { locationQuery = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Location") },
-            placeholder = { Text("Enter location") }
-        )
-
-        OutlinedTextField(
-            value = harvestDate,
-            onValueChange = { harvestDate = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Harvest Date") },
-            placeholder = { Text("Enter harvest date (YYYY-MM-DD)") },
-            isError = harvestDate.isNotEmpty() && !isDateValid(harvestDate),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-        )
-
-        OutlinedTextField(
-            value = quantity,
-            onValueChange = { quantity = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Minimum Quantity") },
-            placeholder = { Text("Enter minimum quantity in kg") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Price Range: Below $${priceRange.toInt()}")
-            Slider(
-                value = priceRange,
-                onValueChange = { priceRange = it },
-                valueRange = 0f..500f
-            )
-        }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text(
+                        "Filter Crops",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color(0xFF4A4A4A) // Dark Gray for good readability
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth() // Add padding from sides
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.Black.copy(alpha = 0.6f))
+                            .padding(16.dp)
+                    ) {
+                        CropTypeDropdown(
+                            selectedCropType = selectedCropType,
+                            onCropTypeSelected = { selectedCropType = it }
+                        )
+                        OutlinedTextField(
+                            value = locationQuery,
+                            onValueChange = { locationQuery = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Location") },
+                            placeholder = { Text("Enter location") },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = Color(0xFF3B8D99), // Teal for focus
+                                unfocusedBorderColor = Color.Gray,
+                                cursorColor = Color(0xFF3B8D99)
+                            )
+                        )
+
+                        OutlinedTextField(
+                            value = harvestDate,
+                            onValueChange = { harvestDate = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Harvest Date") },
+                            placeholder = { Text("Enter harvest date (YYYY-MM-DD)") },
+                            isError = harvestDate.isNotEmpty() && !isDateValid(harvestDate),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = Color(0xFF3B8D99),
+                                unfocusedBorderColor = Color.Gray,
+                                errorBorderColor = Color.Red,
+                                cursorColor = Color(0xFF3B8D99)
+                            )
+                        )
+
+                        OutlinedTextField(
+                            value = quantity,
+                            onValueChange = { quantity = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Minimum Quantity") },
+                            placeholder = { Text("Enter minimum quantity in kg") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = Color(0xFF3B8D99),
+                                unfocusedBorderColor = Color.Gray,
+                                cursorColor = Color(0xFF3B8D99)
+                            )
+                        )
+                    }
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text("Price Range: Below $${priceRange.toInt()}", color = Color(0xFF4A4A4A))
+                        Slider(
+                            value = priceRange,
+                            onValueChange = { priceRange = it },
+                            valueRange = 0f..500f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = Color(0xFF3B8D99),
+                                activeTrackColor = Color(0xFF3B8D99),
+                                inactiveTrackColor = Color(0xFFB8E3E5)
+                            )
+                        )
+                    }
+                }
+            }
+
             items(
                 crops.filter { crop ->
                     (selectedCropType == "Select Crop Type" || crop.type == selectedCropType) &&
@@ -182,15 +227,17 @@ fun isDateValid(date: String): Boolean {
         false
     }
 }
-
 @Composable
 fun CropCard(crop: Crop, navController: NavHostController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Crop Image
@@ -204,21 +251,23 @@ fun CropCard(crop: Crop, navController: NavHostController) {
 
             // Crop Details
             Column(modifier = Modifier.weight(1f)) {
-                Text(crop.type, style = MaterialTheme.typography.bodyLarge)
-                Text("Price: \$${crop.price}", style = MaterialTheme.typography.bodyMedium)
-                Text("Farmer: ${crop.farmerName}", style = MaterialTheme.typography.bodyMedium)
-                Text("Location: ${crop.location}", style = MaterialTheme.typography.bodyMedium)
-                Text("Harvest Date: ${crop.harvestDate}", style = MaterialTheme.typography.bodyMedium)
-                Text("Quantity: ${crop.quantity} kg", style = MaterialTheme.typography.bodyMedium)
+                Text(crop.type, style = MaterialTheme.typography.bodyLarge, color = Color(0xFF4A4A4A))
+                Text("Price: \$${crop.price}", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF3B8D99))
+                Text("Farmer: ${crop.farmerName}", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                Text("Location: ${crop.location}", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                Text("Harvest Date: ${crop.harvestDate}", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                Text("Quantity: ${crop.quantity} kg", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
             }
 
             // View Details Button
-            Button(onClick = {
-                navController.navigate("crop_details/${crop.type}")
-            }) {
-                Text("View Details")
+            Button(
+                onClick = {
+                    navController.navigate("crop_details/${crop.type}")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B8D99))
+            ) {
+                Text("View Details", color = Color.White)
             }
-
         }
     }
 }
